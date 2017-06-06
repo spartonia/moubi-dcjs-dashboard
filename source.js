@@ -1,10 +1,12 @@
-/////////////////////////////////
-//  Map Section                //
-/////////////////////////////////
-
 var formatter = d3.format(".2f");
 
 var seChart = dc.geoChoroplethChart("#se-chart");
+var ageChart = dc.barChart("#age-chart");
+var genderChart = dc.pieChart('#gender-chart');
+var statusChart = dc.pieChart("#status-chart");
+var incomeClassChart = dc.rowChart("#income-class-chart");
+var visCount = dc.dataCount("#data-table-count");
+var visTable = dc.dataTable("#data-table");
 
 d3.csv("moubi.csv", function(err, csv){
   // City,CloseDate,EntityIDRoundID,IndustryCode,Industry Group,Industry Segment,Metropolitan Statistical Area,PrimaryRegion,RoundBusStat,RoundClassDescr,State,Subregion,Deals,Number of Deals,Raised
@@ -12,59 +14,60 @@ d3.csv("moubi.csv", function(err, csv){
   if (err) throw err;
 
   var data = crossfilter(csv);
-  var all2 = data.groupAll();
+  var all = data.groupAll();
 
-  var states = data.dimension(function(d){
+  var states = data.dimension(function (d){
     return d["FBF_LANKOD"].toString();
   });
   var stateRaisedSum = states.group().reduceCount();
 
-  // var industries = data.dimension(function(d){
-  //   return d["Industry Group"];
-  // });
-  // var statsByIndustries = industries.group().reduce(
-  //   function(p, v){  // reduceAdd(p, v)
-  //     p.amountRaised += +v["Raised"];
-  //     p.deals += +v["Deals"];
-  //     return p;
-  //   },
-  //   function(p, v){  // reduceRemove(p, v)
-  //     p.amountRaised -= +v["Raised"];
-  //     if (p.amountRaised < 0.001) p.amountRaised = 0; // do some clean up 
-  //     p.deals -= +v["Deals"];
-  //     return p;
-  //   },
-  //   function(){  // reduceInitial()
-  //     return {amountRaised: 0, deals: 0};
-  //   }
-  // );
+  var genderDim = data.dimension(function (d){
+    switch(d.KON){
+      case "m":
+      case "M":
+        return "Male";
+      case "k":
+      case "K":
+        return "Female";
+      default:
+        return "Not Specified";
+    }
+  });
+  var genderGroup = genderDim.group();
 
-  // var rounds = data.dimension(function(d){
-  //   return d["RoundClassDescr"];
-  // });
-  // var statsByRound = rounds.group().reduce(
-  //   function(p, v){  // reduceAdd(p, v)
-  //     p.amountRaised += +v["Raised"];
-  //     p.deals += +v["Deals"];
-  //     return p;
-  //   },
-  //   function(p, v){  // reduceRemove(p, v)
-  //     p.amountRaised -= +v["Raised"];
-  //     if (p.amountRaised < 0.001) p.amountRaised = 0; // do some clean up 
-  //     p.deals -= +v["Deals"];
-  //     return p;
-  //   },
-  //   function(){  // reduceInitial()
-  //     return {amountRaised: 0, deals: 0};
-  //   }
-  // );
+  var statusDim = data.dimension(function (d){
+    return d.STATUS;
+    // switch (d.STATUS){
+    //   case 0:
+    //   case "0":
+    //     return "OK";
+    //   case 1:
+    //   case "1":
+    //     return "Defalted"
+    //   default:
+    //     return "N/A";
+    // }
+  })
+  var statusGroup = statusDim.group();
 
+  var incomeClassDim = data.dimension(function (d){
+    return d.INKOMSTKLASS ? d.INKOMSTKLASS : "N/A";
+  })
+  var incomeClassGroup = incomeClassDim.group();
+
+  var ageDim = data.dimension(function (d){
+    return d.ALDER ? d.ALDER : "N/A";
+  })
+  var ageGroup = ageDim.group();
+
+
+  // ##### Map charts
   d3.json("swedish_provinces.geojson", function(err, statesJson){
     if (err) throw err;
 
     //Width and height
-    var width = 400;
-    var height = 800;
+    var width = 300;
+    var height = 600;
     
     var projection = d3.geo.mercator()
        .scale(1)
@@ -93,7 +96,120 @@ d3.csv("moubi.csv", function(err, csv){
         return kv.value;})
       .title(function(d){
         return "State: " + d.key + "\nTotal loans: " + d.value
-      });
+      })
+      ;
     dc.renderAll();
   });
+  
+  // ###### Pie/Donut charts 
+
+  // gender chart
+  genderChart
+    // .width(180)
+    // .height(180)
+    .radius(80)
+    .dimension(genderDim)
+    .group(genderGroup)
+    .label(function (d){
+      if (genderChart.hasFilter() && !genderChart.hasFilter(d.key)){
+        return d.key + '(0%)';
+      }
+      var label = d.key;
+      if (all.value()){
+        // console.log(all.value(), d.value);
+        label += '(' + Math.floor(d.value / all.value() * 100) + '%)';
+      }
+      return label;
+    })
+    .renderLabel(true)
+    // .innerRadius(40)
+    // .transitionDuration(500)
+    .colors(d3.scale.ordinal().range(['#FFBD11', '#F7A695']))
+    .colorDomain([-1750, 1644])
+    .colorAccessor(function(d, i){return d.value;})
+    ;
+
+  statusChart
+    .radius(80)
+    .innerRadius(30)
+    .dimension(statusDim)
+    .group(statusGroup)
+    .colors(d3.scale.category20())
+    .label(function (d){
+      if (statusChart.hasFilter() && !statusChart.hasFilter(d.key)){
+        return d.key + '(0%)';
+      }
+      var label = d.key;
+      if (all.value()){
+        // console.log(all.value(), d.value);
+        label += '(' + Math.floor(d.value / all.value() * 100) + '%)';
+      }
+      return label;
+    })
+    .renderLabel(true)
+    ;
+
+  // Data tables and counts 
+
+  visCount
+    .dimension(data)
+    .group(all)
+    ;
+
+  visTable
+    .dimension(statusDim)
+    .group(function (d){
+      return d.INKOMSTKLASS;
+    })
+    .columns([
+      "ID",
+      "STATUS",
+      "POSTORT",
+      "ALDER",
+      "KON",
+      "ALDER",
+      "BETALNING_HISTORIK",
+      "INKOMSTKLASS"
+      ])
+    .size(25)
+    ;
+
+  // Income chart
+  incomeClassChart
+    .width(350)
+    .height(600)
+    .dimension(incomeClassDim)
+    .group(incomeClassGroup)
+    // .y(d3.scale.log().domain([.5, 1000000]))
+    .elasticX(true)
+    .title(function (d){
+      return "Income class: " + d.key + "\nTotal count:" + d.value
+    })
+    .data(function (group){
+      return group.top(20);
+    })
+    // .xAxisLabel("Count")  // does not supported for rowChart
+    // .yAxisLabel("Income Class")
+    .xAxis().ticks(6)
+    ;
+
+  // Age chart 
+  ageChart
+    .width(900)
+    .height(250)
+    .margins({top: 30, right: 20, bottom: 30, left: 40})
+    .dimension(ageDim)
+    .group(ageGroup)
+    .elasticY(true)
+    .centerBar(false)
+    .gap(1) // default = 2
+    .round(dc.round.floor)
+    .alwaysUseRounding(true)
+    .x(d3.scale.linear().domain([10, 100])) // min max age 
+    .renderHorizontalGridLines(true)
+    .xAxisLabel("Age") 
+    .yAxisLabel("Count") 
+    ;
+
+  dc.renderAll();
 });
