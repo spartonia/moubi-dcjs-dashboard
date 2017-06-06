@@ -37,51 +37,15 @@
   </div>
    <!-- Replace the desired laout code here -->
   <div class="container-fluid">
-    <div class="row">
-
-      <div class="col-sm-6">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Car Types:
-          </div>
-          <div class="chart-stage">
-            <div id="carType"></div>
-          </div>
-          <div class="chart-notes">
-            This is a sample text region to describe this <span> charttttt</span>chart.
-            <span class="reset" style="">Selected:" 
-              <span class="filter"></span>
-            </span>
-            <a class="reset" href="javascript:carTypeChart.filterAll();dc.redrawAll()" style="">reset</a>
-            <div class="clearfix"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-6">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Pageviews by browser (past 5 days)
-          </div>
-          <div class="chart-stage">
-            <div id="gateName"></div>
-          </div>
-          <div class="chart-notes">
-            Notes go down here
-          </div>
-        </div>
-      </div>
-
-    </div>
 
     <div class="row">
 
-      <div class="col-sm-12">
+      <div class="col-sm-12 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-stage">
-            <div id="us-chart">
-              <strong>VC Distribution by States (color: total amount raised)</strong>
-              <a class="reset" href="javascript:usChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+            <div id="se-chart">
+              <strong>Loans by States (color: total loans)</strong>
+              <a class="reset" href="javascript:seChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
               <span class="reset" style="display: none;"> | Current filter: <span class="filter"></span></span>
 
               <div class="clearfix"></div>
@@ -92,13 +56,7 @@
           </div>
         </div>
       </div>
-
-    </div>
-
-
-    <div class="row">
-
-      <div class="col-sm-12">
+      <div class="col-sm-12 col-md-8">
         <div class="chart-wrapper">
           <div class="chart-title">
             Impressions by advertiser
@@ -120,6 +78,8 @@
       </div>
 
     </div>
+
+
 
     <hr>
 
