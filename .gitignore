@@ -13,13 +13,14 @@ __pycache__/
 env/
 build/
 develop-eggs/
-dist/
+/dist/
 downloads/
 eggs/
+/lib/
 lib64/
 parts/
 sdist/
-var/
+/var/
 *.egg-info/
 .installed.cfg
 *.egg
