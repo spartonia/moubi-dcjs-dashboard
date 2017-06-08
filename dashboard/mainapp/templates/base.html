@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Starter UI, by Keen IO</title>
+
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+  <link rel="stylesheet" type="text/css" href="{% static 'lib/bootstrap/dist/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/dc.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/keen-dashboards.css' %}" />
+</head>
+<body class="application">
+
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="{% url 'home' %}">Home</a></li>
+          </ul>
+      </div>
+    </div>
+  </div>
+   <!-- Replace the desired layout code here -->
+
+  {% block layout %}
+  {% endblock layout %}
+
+  <!-- dependencies -->
+  <script type="text/javascript" src="{% static 'js/crossfilter.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/d3.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/dc.js' %}"></script>
+
+  <script type="text/javascript" src="{% static 'lib/jquery/dist/jquery.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'lib/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+
+  <script type="text/javascript" src="{% static 'lib/holderjs/holder.js' %}"></script>
+  <script>
+    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
+  </script>
+
+  <script type="text/javascript" src="{% static 'lib/keen-js/dist/keen.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/meta.js' %}"></script>
+
+  <script src="{% static 'js/source.js' %}">
+  // write the js code in source.js file.
+  </script>
+
+</body>
+</html>

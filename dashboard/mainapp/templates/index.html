@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+  {% block layout %}
+  <div class="container-fluid">
+
+    <div class="row">
+
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="chart-wrapper">
+            <div class="chart-title">
+              Loans by States (color: total loans)
+              <a class="reset" href="javascript:seChart.filterAll();dc.redrawAll();" style=";">reset</a>
+                <span class="reset" style="display: none;"> | Current filter: <span class="filter"></span></span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="chart-stage">
+              <div class="chart-stage">
+              <div id="se-chart">
+
+                <div class="clearfix"></div>
+              </div>
+            </div>
+            </div>
+            <div class="chart-notes">
+              Select state(s) for slicing and dicing.
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="chart-wrapper">
+                <div class="chart-title">
+                  Age:
+                    <a class="reset" href="javascript:ageChart.filterAll();dc.redrawAll();" >reset</a>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="chart-stage">
+                  <div id="age-chart">
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+                <div class="chart-notes">
+                  Select an age range to zoom in
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="chart-wrapper">
+                <div class="chart-title">
+                  Gender:
+                    <a class="reset" href="javascript:genderChart.filterAll();dc.redrawAll();" >reset</a>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="chart-stage">
+                  <div id="gender-chart">
+                    <div class="clearfix"></div>
+                  </div>
+
+                </div>
+                <div class="chart-notes">
+                  Click on the pie chart to filter by gender.
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="chart-wrapper">
+                <div class="chart-title">
+                  Status:
+                    <a class="reset" href="javascript:statusChart.filterAll();dc.redrawAll();" >reset</a>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="chart-stage">
+                  <div id="status-chart">
+                    <div class="clearfix"></div>
+                  </div>
+
+                </div>
+                <div class="chart-notes">
+                  Click on the pie chart to filter by status.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="chart-wrapper">
+            <div class="chart-title">
+              Income class <a class="reset" href="javascript:incomeClassChart.filterAll();dc.redrawAll();" style=";">reset</a>
+                <span class="reset" style="display: none;"> | Current filter: <span class="filter"></span></span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="chart-stage">
+              <div class="chart-stage">
+              <div id="income-class-chart">
+
+                <div class="clearfix"></div>
+              </div>
+            </div>
+            </div>
+            <div class="chart-notes">
+              Click on a bar to zoom in.
+            </div>
+          </div>
+        </div>
+        <!-- <div class="col-sm-3"></div> -->
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="col-sm-12">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Impressions by advertiser
+          </div>
+           <div class="chart-stage">
+            <div>
+                <div class="dc-data-count" id="data-table-count">
+                    <span class="filter-count"></span> selected out of <span class="total-count"></span> records | <a
+                        href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
+                </div>
+            </div>
+            <table class="table table-hover dc-data-table" id="data-table">
+            </table>
+          </div>
+          <div class="chart-notes">
+            Notes go down here
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <p class="small text-muted">Template built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
+
+  </div>
+  {% endblock layout %}
