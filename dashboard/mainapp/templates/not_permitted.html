@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block layout %}
+<h4>User "{{ request.user.username }}" has no data or is deactivated.
+    Contact admin for more info.</h4>
+{% endblock layout %}

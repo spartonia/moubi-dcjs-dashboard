@@ -146,3 +146,12 @@ STATICFILES_FINDERS = (
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'staticfiles')
+
+# TODO: read from os.environment
+PG_DB_PARAMS = {
+    'database': 'syna',
+    'user': 'data_user',
+    'password': '!letmein!',
+    'host': 'Moubi.ai',
+    'port': 5432
+}
