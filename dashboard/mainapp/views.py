@@ -4,7 +4,10 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponse
 
+import csv
+import json
 import psycopg2
 import psycopg2.extras as pg_extras
 
@@ -18,11 +21,25 @@ def home(request):
     if (user_label and not user_label.isActive) or not user_label:
         return render(request, 'not_permitted.html', {})
 
-    user_label_ = user_label.label
-    rs = get_data_for_user(user_label_)
-    # import ipdb; ipdb.set_trace()
-
     return render(request, "index.html", {})
+
+
+# @login_required(login_url='/login/')
+def user_data(request):
+    user = request.user
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = \
+        'attachment; filename="somefilename.csv"'
+
+    if user.is_authenticated():
+        user_label = UserLabel.objects.filter(user=user).first()
+        response_data = get_data_for_user(user_label.label)
+        if response_data:
+            writer = csv.DictWriter(response, response_data[0].keys())
+            writer.writeheader()
+            for rs in response_data:
+                writer.writerow(rs)
+    return response
 
 
 def get_data_for_user(user_label_):
@@ -37,8 +54,8 @@ def get_data_for_user(user_label_):
         universe_tbl='univers_20160702',
         user_label=str(user_label_)
     )
-
-    conn = conncet()
+    conn = connect()
+    rs = []
     try:
         cur = conn.cursor(cursor_factory=pg_extras.RealDictCursor)
         cur.execute(qry)
@@ -46,12 +63,12 @@ def get_data_for_user(user_label_):
         print '*' * 60
         print e
         conn.rollback()
-    finally:
+    else:
         rs = cur.fetchall()
-        return rs
+    return rs
 
 
-def conncet():
+def connect():
     try:
         conn = psycopg2.connect(**settings.PG_DB_PARAMS)
     except:

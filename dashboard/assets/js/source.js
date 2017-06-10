@@ -1,4 +1,3 @@
-
 var formatter = d3.format(".2f");
 
 var seChart = dc.geoChoroplethChart("#se-chart");
@@ -9,21 +8,19 @@ var incomeClassChart = dc.rowChart("#income-class-chart");
 var visCount = dc.dataCount("#data-table-count");
 var visTable = dc.dataTable("#data-table");
 
-d3.csv("./static/data/moubi.csv", function(err, csv){
-  // City,CloseDate,EntityIDRoundID,IndustryCode,Industry Group,Industry Segment,Metropolitan Statistical Area,PrimaryRegion,RoundBusStat,RoundClassDescr,State,Subregion,Deals,Number of Deals,Raised
-  // Mountain View,1/1/2011,6.12834E+11,Database Software,Information Technology,Software,"San Jose-Sunnyvale-Santa Clara, CA",Northern California,Generating Revenue,First Round,CA,San Francisco Bay Area,1,1,2
+d3.csv("./userData/", function(err, csv){
   if (err) throw err;
 
   var data = crossfilter(csv);
   var all = data.groupAll();
 
   var states = data.dimension(function (d){
-    return d["FBF_LANKOD"].toString();
+    return d["fbf_lankod"].toString();
   });
   var stateRaisedSum = states.group().reduceCount();
 
   var genderDim = data.dimension(function (d){
-    switch(d.KON){
+    switch(d.kon){
       case "m":
       case "M":
         return "Male";
@@ -37,7 +34,7 @@ d3.csv("./static/data/moubi.csv", function(err, csv){
   var genderGroup = genderDim.group();
 
   var statusDim = data.dimension(function (d){
-    return d.STATUS;
+    return d.status;
     // switch (d.STATUS){
     //   case 0:
     //   case "0":
@@ -52,12 +49,12 @@ d3.csv("./static/data/moubi.csv", function(err, csv){
   var statusGroup = statusDim.group();
 
   var incomeClassDim = data.dimension(function (d){
-    return d.INKOMSTKLASS ? d.INKOMSTKLASS : "N/A";
+    return d.inkomstklass ? d.inkomstklass : "N/A";
   })
   var incomeClassGroup = incomeClassDim.group();
 
   var ageDim = data.dimension(function (d){
-    return d.ALDER ? d.ALDER : "N/A";
+    return d.alder ? d.alder : "N/A";
   })
   var ageGroup = ageDim.group();
 
@@ -160,17 +157,15 @@ d3.csv("./static/data/moubi.csv", function(err, csv){
   visTable
     .dimension(statusDim)
     .group(function (d){
-      return d.INKOMSTKLASS;
+      return d.inkomstklass;
     })
     .columns([
-      "ID",
-      "STATUS",
-      "POSTORT",
-      "ALDER",
-      "KON",
-      "ALDER",
-      "BETALNING_HISTORIK",
-      "INKOMSTKLASS"
+      "uni",
+//      "STATUS",
+      "postort",
+      "alder",
+      "kon",
+      "inkomstklass"
       ])
     .size(25)
     ;
