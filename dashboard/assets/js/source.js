@@ -34,7 +34,8 @@ d3.csv("./userData/", function(err, csv){
   var genderGroup = genderDim.group();
 
   var statusDim = data.dimension(function (d){
-    return d.status;
+    // TODO: change to status or equivalent
+    return d.kon;
     // switch (d.STATUS){
     //   case 0:
     //   case "0":
@@ -160,9 +161,9 @@ d3.csv("./userData/", function(err, csv){
       return d.inkomstklass;
     })
     .columns([
-      "uni",
+//      "uni",
 //      "STATUS",
-      "postort",
+      "fbf_postort",
       "alder",
       "kon",
       "inkomstklass"

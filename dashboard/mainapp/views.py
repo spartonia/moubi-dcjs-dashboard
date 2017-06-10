@@ -17,6 +17,9 @@ from .models import UserLabel
 @login_required(login_url='/login/')
 def home(request):
     user = request.user
+    if user.is_staff:
+        return render(request, "index.html", {})
+
     user_label = UserLabel.objects.filter(user=user).first()
     if (user_label and not user_label.isActive) or not user_label:
         return render(request, 'not_permitted.html', {})
@@ -33,7 +36,13 @@ def user_data(request):
 
     if user.is_authenticated():
         user_label = UserLabel.objects.filter(user=user).first()
-        response_data = get_data_for_user(user_label.label)
+        if user.is_staff:
+            # TODO: is not used currently due to difficulty of dc
+            # rendering rows above 200K. Once fixed, use label = -1
+            label = user_label.label
+        else:
+            label = user_label.label
+        response_data = get_data_for_user(label)
         if response_data:
             writer = csv.DictWriter(response, response_data[0].keys())
             writer.writeheader()
@@ -43,17 +52,38 @@ def user_data(request):
 
 
 def get_data_for_user(user_label_):
-    qry = """
-        SELECT u.*
-        FROM {customer_tbl} c
-        INNER JOIN {universe_tbl} u
-        ON c.uni =  u.uni
-        WHERE c.label like '{user_label}';
-        """.format(
-        customer_tbl='customer_test',
-        universe_tbl='univers_20160702',
-        user_label=str(user_label_)
-    )
+    """
+    :param user_label_: <integer>
+        Note: to retrieve all rows from the univers_tbl, use 'user_label_= -1'
+    :return rs: <dict> Result set
+    """
+    customer_tbl = 'customer_test'
+    universe_tbl = 'univers_20160702'
+
+    if user_label_ == -1:  # admin/staff, retrieve all rows
+        # TODO: is not used currently due to difficulty of dc rendering rows
+        # above 200K.
+        qry = """
+            SELECT kon, alder, inkomstklass, fbf_postort, fbf_lankod
+            FROM {universe_tbl}
+            LIMIT 200000
+            ;
+            """.format(universe_tbl=universe_tbl)
+    else:
+        # TODO: choose only required fields.
+        qry = """
+            SELECT u.*
+            FROM {customer_tbl} c
+            INNER JOIN {universe_tbl} u
+            ON c.uni =  u.uni
+            WHERE c.label like '{user_label}'
+            ;
+            """.format(
+            customer_tbl=customer_tbl,
+            universe_tbl=universe_tbl,
+            user_label=str(user_label_)
+        )
+
     conn = connect()
     rs = []
     try:
